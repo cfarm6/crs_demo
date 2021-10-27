@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<mapping>
+	<map>
+		<framework name="0" output_port_id="0" />
+		<IR name="0" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Constant_0" output_port_id="2" />
+		<IR name="Constant_0" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_179" output_port_id="3" />
+		<IR name="Gather_179" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Constant_2" output_port_id="4" />
+		<IR name="Constant_2" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_371" output_port_id="5" />
+		<IR name="Gather_371" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Gather_371" output_port_id="14" />
+		<IR name="Gather_371" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Unsqueeze_13/Unsqueeze" output_port_id="15" />
+		<IR name="Unsqueeze_13/Unsqueeze" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Unsqueeze_14/Unsqueeze" output_port_id="16" />
+		<IR name="Unsqueeze_14/Unsqueeze" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="blur.weight" output_port_id="blur.weight" />
+		<IR name="blur.weight" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Conv_21" output_port_id="23" />
+		<IR name="Conv_21" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Constant_22" output_port_id="24" />
+		<IR name="Constant_22" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_2369" output_port_id="25" />
+		<IR name="Gather_2369" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Constant_24" output_port_id="26" />
+		<IR name="Constant_24" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_2567" output_port_id="27" />
+		<IR name="Gather_2567" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Unsqueeze_36/Unsqueeze" output_port_id="38" />
+		<IR name="Unsqueeze_36/Unsqueeze" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Constant_4" output_port_id="6" />
+		<IR name="Constant_4" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_587" output_port_id="7" />
+		<IR name="Gather_587" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Constant_6" output_port_id="8" />
+		<IR name="Constant_6" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_773" output_port_id="9" />
+		<IR name="Gather_773" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Gather_773" output_port_id="17" />
+		<IR name="Gather_773" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Unsqueeze_16/Unsqueeze" output_port_id="18" />
+		<IR name="Unsqueeze_16/Unsqueeze" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Unsqueeze_17/Unsqueeze" output_port_id="19" />
+		<IR name="Unsqueeze_17/Unsqueeze" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="blur.weight2730" output_port_id="blur.weight" />
+		<IR name="blur.weight2730" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Conv_26" output_port_id="28" />
+		<IR name="Conv_26" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Constant_27" output_port_id="29" />
+		<IR name="Constant_27" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_2885" output_port_id="30" />
+		<IR name="Gather_2885" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Constant_29" output_port_id="31" />
+		<IR name="Constant_29" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_3081" output_port_id="32" />
+		<IR name="Gather_3081" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Unsqueeze_37/Unsqueeze" output_port_id="39" />
+		<IR name="Unsqueeze_37/Unsqueeze" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Constant_8" output_port_id="10" />
+		<IR name="Constant_8" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_983" output_port_id="11" />
+		<IR name="Gather_983" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Constant_10" output_port_id="12" />
+		<IR name="Constant_10" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_1189" output_port_id="20" />
+		<IR name="Gather_1189" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Gather_1189" output_port_id="13" />
+		<IR name="Gather_1189" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Unsqueeze_19/Unsqueeze" output_port_id="21" />
+		<IR name="Unsqueeze_19/Unsqueeze" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Unsqueeze_20/Unsqueeze" output_port_id="22" />
+		<IR name="Unsqueeze_20/Unsqueeze" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="blur.weight2787" output_port_id="blur.weight" />
+		<IR name="blur.weight2787" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Conv_31" output_port_id="33" />
+		<IR name="Conv_31" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Constant_32" output_port_id="34" />
+		<IR name="Constant_32" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_3375" output_port_id="35" />
+		<IR name="Gather_3375" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Constant_34" output_port_id="36" />
+		<IR name="Constant_34" output_port_id="0" />
+	</map>
+	<map>
+		<framework name="Gather_3577" output_port_id="37" />
+		<IR name="Gather_3577" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="Unsqueeze_38/Unsqueeze" output_port_id="40" />
+		<IR name="Unsqueeze_38/Unsqueeze" output_port_id="2" />
+	</map>
+	<map>
+		<framework name="Concat_39" output_port_id="41" />
+		<IR name="Concat_39" output_port_id="3" />
+	</map>
+	<map>
+		<framework name="42" output_port_id="42" />
+		<IR name="42" output_port_id="2" />
+	</map>
+</mapping>

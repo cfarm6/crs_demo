@@ -15,6 +15,7 @@ p.setOpenVINOVersion(version=dai.OpenVINO.Version.VERSION_2021_4)
 
 # Download Model for use
 size = (300,300)
+# size = (544,320)
 # nnPath = blobconverter.from_zoo("person-detection-retail-0013", shaves = 6)
 nnPath = blobconverter.from_zoo("face-detection-retail-0004", shaves=6)
 # Labels
@@ -138,8 +139,8 @@ with dai.Device(p) as dev:
         depthFrame = depth_in.getFrame()
         depthFrameColor = cv2.normalize(depthFrame, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1)
         depthFrameColor = cv2.equalizeHist(depthFrameColor)
-        depthFrameColor = cv2.applyColorMap(depthFrameColor, cv2.COLORMAP_TWILIGHT_SHIFTED)
-        depthFrameColor = cv2.resize(depthFrameColor, (int(1920*0.5), int(1080*0.5)))
+        depthFrameColor = cv2.applyColorMap(depthFrameColor, cv2.COLORMAP_INFERNO)
+        # depthFrameColor = cv2.resize(depthFrameColor, (int(1920*0.5), int(1080*0.5)))
 
         detections = nn_out.detections
         if len(detections) != 0:

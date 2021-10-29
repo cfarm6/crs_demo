@@ -63,7 +63,7 @@ nn = p.create(dai.node.MobileNetSpatialDetectionNetwork)
 nn.setBlobPath(str(Path(nnPath).resolve().absolute()))
 # ignore detections below 50%
 nn.setConfidenceThreshold(0.5)
-nn.input.setBlocking(False)
+nn.input.setBlocking(True)
 
 # Link RGB_Cam to NN
 rgb_cam.preview.link(nn.input)
@@ -107,12 +107,17 @@ xout_bb.setStreamName("bb")
 # # Link NN.boundingBoxMapping -> bb_out
 nn.boundingBoxMapping.link(xout_bb.input)
 
+cv2.namedWindow("Depth")
+cv2.namedWindow("Image")
+cv2.moveWindow("Depth", 0,0)
+# cv2.moveWindow("Image", 912,35)
+cv2.moveWindow("Image", 0, 513)
 # Connect to Device and Start Pipeline
 with dai.Device(p) as dev:
-    rgbQueue = dev.getOutputQueue(name = "rgb", maxSize = 4, blocking = False)
-    depthQueue = dev.getOutputQueue(name="depth", maxSize=4, blocking=False)
-    nnQueue = dev.getOutputQueue(name="nn", maxSize=4, blocking=False)
-    bbQueue = dev.getOutputQueue(name="bb", maxSize=4, blocking=False)
+    rgbQueue = dev.getOutputQueue(name = "rgb", maxSize = 10, blocking = False)
+    depthQueue = dev.getOutputQueue(name="depth", maxSize= 10, blocking=False)
+    nnQueue = dev.getOutputQueue(name="nn", maxSize=10, blocking=False)
+    bbQueue = dev.getOutputQueue(name="bb", maxSize=10, blocking=False)
 
     startTime = time.monotonic()
     counter = 0
@@ -134,13 +139,13 @@ with dai.Device(p) as dev:
         # shape = (300, 300, 3)
         # rgbFrame = rgbFrame.reshape(shape)
         rgbFrame = rgb_in.getCvFrame()
-        rgbFrame = cv2.resize(rgbFrame, (int(1920*0.5), int(1080*0.5)))
+        rgbFrame = cv2.resize(rgbFrame, (int(1600*0.45), int(900*0.45)))
         
         depthFrame = depth_in.getFrame()
         depthFrameColor = cv2.normalize(depthFrame, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1)
         depthFrameColor = cv2.equalizeHist(depthFrameColor)
-        depthFrameColor = cv2.applyColorMap(depthFrameColor, cv2.COLORMAP_INFERNO)
-        # depthFrameColor = cv2.resize(depthFrameColor, (int(1920*0.5), int(1080*0.5)))
+        depthFrameColor = cv2.applyColorMap(depthFrameColor, cv2.COLORMAP_TURBO)
+        depthFrameColor = cv2.resize(depthFrameColor, (int(1600*0.45), int(900*0.45)))
 
         detections = nn_out.detections
         if len(detections) != 0:
@@ -177,8 +182,8 @@ with dai.Device(p) as dev:
         cv2.putText(depthFrameColor, "DEPTH IMAGE", (int(
             depthFrameColor.shape[0]/2)+50, 50), cv2.FONT_HERSHEY_TRIPLEX, 1.0, (0, 0, 0), 2)
 
-        cv2.imshow("depth", depthFrameColor)
-        cv2.imshow("preview", rgbFrame)
+        cv2.imshow("Depth", depthFrameColor)
+        cv2.imshow("Image", rgbFrame)
 
         if cv2.waitKey(1) == ord('q'):
             break

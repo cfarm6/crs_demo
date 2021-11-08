@@ -104,22 +104,35 @@ nn.out.link(xout_nn.input)
 xout_bb = p.create(dai.node.XLinkOut)
 xout_bb.setStreamName("bb")
 
+# Create Left Camera Stream
+xout_left = p.create(dai.node.XLinkOut)
+xout_left.setStreamName("left")
+l_cam.out.link(xout_left.input)
+# Create Right Camera Stream
+xout_right = p.create(dai.node.XLinkOut)
+xout_right.setStreamName("right")
+r_cam.out.link(xout_right.input)
 # # Link NN.boundingBoxMapping -> bb_out
 nn.boundingBoxMapping.link(xout_bb.input)
 
 cv2.namedWindow("Depth")
 cv2.namedWindow("Image")
+cv2.namedWindow("Right")
+cv2.namedWindow("Left")
 cv2.moveWindow("Depth", 0,0)
-# cv2.moveWindow("Image", 912,35)
 cv2.moveWindow("Image", 0, 513)
+cv2.moveWindow("Left", 800, 0)
+cv2.moveWindow("Right", 800, 513)
 # Connect to Device and Start Pipeline
 while True:
     try:
         with dai.Device(p) as dev:
-            rgbQueue = dev.getOutputQueue(name = "rgb", maxSize = 10, blocking = False)
-            depthQueue = dev.getOutputQueue(name="depth", maxSize= 10, blocking=False)
-            nnQueue = dev.getOutputQueue(name="nn", maxSize=10, blocking=False)
-            bbQueue = dev.getOutputQueue(name="bb", maxSize=10, blocking=False)
+            rgbQueue = dev.getOutputQueue(name = "rgb", maxSize = 4, blocking = False)
+            leftQueue = dev.getOutputQueue(name = "left", maxSize = 4, blocking = False)
+            rightQueue = dev.getOutputQueue(name = "right", maxSize = 4, blocking = False)
+            depthQueue = dev.getOutputQueue(name="depth", maxSize= 4, blocking=False)
+            nnQueue = dev.getOutputQueue(name="nn", maxSize=4, blocking=False)
+            bbQueue = dev.getOutputQueue(name="bb", maxSize=4, blocking=False)
 
             startTime = time.monotonic()
             counter = 0
@@ -127,6 +140,8 @@ while True:
 
             while time.monotonic()-startTime <3600*5:
                 rgb_in = rgbQueue.get()
+                left_in = leftQueue.get()
+                right_in = rightQueue.get()
                 depth_in = depthQueue.get()
                 nn_out = nnQueue.get()
 
@@ -142,6 +157,12 @@ while True:
                 # rgbFrame = rgbFrame.reshape(shape)
                 rgbFrame = rgb_in.getCvFrame()
                 rgbFrame = cv2.resize(rgbFrame, (int(1600*0.45), int(900*0.45)))
+
+                leftFrame = left_in.getCvFrame()
+                leftFrame = cv2.resize(leftFrame, (int(1600*0.45), int(900*0.45)))
+
+                rightFrame = right_in.getCvFrame()
+                rightFrame = cv2.resize(rightFrame, (int(1600*0.45), int(900*0.45)))
 
                 depthFrame = depth_in.getFrame()
                 depthFrameColor = cv2.normalize(depthFrame, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1)
@@ -186,6 +207,8 @@ while True:
 
                 cv2.imshow("Depth", depthFrameColor)
                 cv2.imshow("Image", rgbFrame)
+                cv2.imshow("Left", leftFrame)
+                cv2.imshow("Right", rightFrame)
 
                 if cv2.waitKey(1) == ord('q'):
                     break

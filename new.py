@@ -125,7 +125,7 @@ while True:
             counter = 0
             fps = 0
 
-            while time.monotonic()-startTime <3600*5:
+            while time.monotonic()-startTime <60*5:
                 rgb_in = rgbQueue.get()
                 depth_in = depthQueue.get()
                 nn_out = nnQueue.get()

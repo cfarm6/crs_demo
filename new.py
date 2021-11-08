@@ -35,17 +35,17 @@ rgb_cam.setResolution(color_resolution)
 rgb_cam.setInterleaved(False)
 rgb_cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
 rgb_cam.setPreviewKeepAspectRatio(False)
-
+rgb_cam.setFps(15)
 # Create L-MONO Node
 l_cam = p.create(dai.node.MonoCamera)
 l_cam.setBoardSocket(dai.CameraBoardSocket.LEFT)
 l_cam.setResolution(bw_resolution)
-
+l_cam.setFps(15)
 # Create R-MONO Node
 r_cam = p.create(dai.node.MonoCamera)
 r_cam.setBoardSocket(dai.CameraBoardSocket.RIGHT)
 r_cam.setResolution(bw_resolution)
-
+r_cam.setFps(15)
 # Create Depth Node
 stereo = p.create(dai.node.StereoDepth)
 stereo.setLeftRightCheck(False)

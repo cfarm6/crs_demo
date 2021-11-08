@@ -113,77 +113,81 @@ cv2.moveWindow("Depth", 0,0)
 # cv2.moveWindow("Image", 912,35)
 cv2.moveWindow("Image", 0, 513)
 # Connect to Device and Start Pipeline
-with dai.Device(p) as dev:
-    rgbQueue = dev.getOutputQueue(name = "rgb", maxSize = 10, blocking = False)
-    depthQueue = dev.getOutputQueue(name="depth", maxSize= 10, blocking=False)
-    nnQueue = dev.getOutputQueue(name="nn", maxSize=10, blocking=False)
-    bbQueue = dev.getOutputQueue(name="bb", maxSize=10, blocking=False)
+while True:
+    try:
+        with dai.Device(p) as dev:
+            rgbQueue = dev.getOutputQueue(name = "rgb", maxSize = 10, blocking = False)
+            depthQueue = dev.getOutputQueue(name="depth", maxSize= 10, blocking=False)
+            nnQueue = dev.getOutputQueue(name="nn", maxSize=10, blocking=False)
+            bbQueue = dev.getOutputQueue(name="bb", maxSize=10, blocking=False)
 
-    startTime = time.monotonic()
-    counter = 0
-    fps = 0
-
-    while True:
-        rgb_in = rgbQueue.get()
-        depth_in = depthQueue.get()
-        nn_out = nnQueue.get()
-        
-        counter += 1
-        current_time = time.monotonic()
-        if (current_time - startTime) > 1:
-            fps = counter/(current_time - startTime)
+            startTime = time.monotonic()
             counter = 0
-            startTime =  current_time
-        # rgbFrame = rgb_in.getFirstLayerFp16()
-        # rgbFrame = np.array(rgbFrame, dtype=np.uint8)
-        # shape = (300, 300, 3)
-        # rgbFrame = rgbFrame.reshape(shape)
-        rgbFrame = rgb_in.getCvFrame()
-        rgbFrame = cv2.resize(rgbFrame, (int(1600*0.45), int(900*0.45)))
-        
-        depthFrame = depth_in.getFrame()
-        depthFrameColor = cv2.normalize(depthFrame, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1)
-        depthFrameColor = cv2.equalizeHist(depthFrameColor)
-        depthFrameColor = cv2.applyColorMap(depthFrameColor, cv2.COLORMAP_TURBO)
-        depthFrameColor = cv2.resize(depthFrameColor, (int(1600*0.45), int(900*0.45)))
+            fps = 0
 
-        detections = nn_out.detections
-        if len(detections) != 0:
-            bbMapping = bbQueue.get()
-            roiDatas = bbMapping.getConfigData()
+            while time.monotonic()-startTime <3600*5:
+                rgb_in = rgbQueue.get()
+                depth_in = depthQueue.get()
+                nn_out = nnQueue.get()
 
-            for roiData in roiDatas:
-                roi = roiData.roi
-                roi = roi.denormalize(depthFrameColor.shape[1], depthFrameColor.shape[0])
-                topLeft = roi.topLeft()
-                bottomRight = roi.bottomRight()
-                xmid = int((int(topLeft.x)-int(bottomRight.x))/2)
-                xmin = int(topLeft.x)+xmid
-                ymin = int(topLeft.y)
-                xmax = int(bottomRight.x)+xmid
-                ymax = int(bottomRight.y)
+                counter += 1
+                # current_time = time.monotonic()
+                # if (current_time - startTime) > 1:
+                #     fps = counter/(current_time - startTime)
+                #     counter = 0
+                #     startTime =  current_time
+                # rgbFrame = rgb_in.getFirstLayerFp16()
+                # rgbFrame = np.array(rgbFrame, dtype=np.uint8)
+                # shape = (300, 300, 3)
+                # rgbFrame = rgbFrame.reshape(shape)
+                rgbFrame = rgb_in.getCvFrame()
+                rgbFrame = cv2.resize(rgbFrame, (int(1600*0.45), int(900*0.45)))
 
-                cv2.rectangle(depthFrameColor, (xmin, ymin), (xmax, ymax), 255, 10)
-        rgb_height = rgbFrame.shape[0]
-        rgb_width = rgbFrame.shape[1]
+                depthFrame = depth_in.getFrame()
+                depthFrameColor = cv2.normalize(depthFrame, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1)
+                depthFrameColor = cv2.equalizeHist(depthFrameColor)
+                depthFrameColor = cv2.applyColorMap(depthFrameColor, cv2.COLORMAP_TURBO)
+                depthFrameColor = cv2.resize(depthFrameColor, (int(1600*0.45), int(900*0.45)))
 
-        for detection in detections:
-            rgb_x1 = int(detection.xmin*rgb_width)
-            rgb_x2 = int(detection.xmax*rgb_width)
-            rgb_y1 = int(detection.ymin*rgb_height)
-            rgb_y2 = int(detection.ymax*rgb_height)
+                detections = nn_out.detections
+                if len(detections) != 0:
+                    bbMapping = bbQueue.get()
+                    roiDatas = bbMapping.getConfigData()
 
-            cv2.rectangle(rgbFrame, (rgb_x1, rgb_y1), (rgb_x2, rgb_y2), 255, 10)
-            cv2.putText(rgbFrame, f"Z: {int(detection.spatialCoordinates.z)/1000} m",
-                        (rgb_x1+int((rgb_x2-rgb_x1)/4), rgb_y1+int((rgb_y2-rgb_y1)/2)), cv2.FONT_HERSHEY_TRIPLEX, 0.5, (255, 255, 255))
+                    for roiData in roiDatas:
+                        roi = roiData.roi
+                        roi = roi.denormalize(depthFrameColor.shape[1], depthFrameColor.shape[0])
+                        topLeft = roi.topLeft()
+                        bottomRight = roi.bottomRight()
+                        xmid = int((int(topLeft.x)-int(bottomRight.x))/2)
+                        xmin = int(topLeft.x)+xmid
+                        ymin = int(topLeft.y)
+                        xmax = int(bottomRight.x)+xmid
+                        ymax = int(bottomRight.y)
 
-        cv2.putText(rgbFrame, "NN fps: {:.2f}".format(fps), (2, rgbFrame.shape[0] - 4), cv2.FONT_HERSHEY_TRIPLEX, 0.4, (255, 255, 255))
-        cv2.putText(rgbFrame, "COLOR IMAGE", (int(rgbFrame.shape[0]/2)+50, 50), cv2.FONT_HERSHEY_TRIPLEX, 1.0, (255, 255, 255), 2)
-        cv2.putText(depthFrameColor, "DEPTH IMAGE", (int(
-            depthFrameColor.shape[0]/2)+50, 50), cv2.FONT_HERSHEY_TRIPLEX, 1.0, (0, 0, 0), 2)
+                        cv2.rectangle(depthFrameColor, (xmin, ymin), (xmax, ymax), 255, 10)
+                rgb_height = rgbFrame.shape[0]
+                rgb_width = rgbFrame.shape[1]
 
-        cv2.imshow("Depth", depthFrameColor)
-        cv2.imshow("Image", rgbFrame)
+                for detection in detections:
+                    rgb_x1 = int(detection.xmin*rgb_width)
+                    rgb_x2 = int(detection.xmax*rgb_width)
+                    rgb_y1 = int(detection.ymin*rgb_height)
+                    rgb_y2 = int(detection.ymax*rgb_height)
 
-        if cv2.waitKey(1) == ord('q'):
-            break
+                    cv2.rectangle(rgbFrame, (rgb_x1, rgb_y1), (rgb_x2, rgb_y2), 255, 10)
+                    cv2.putText(rgbFrame, f"Z: {int(detection.spatialCoordinates.z)/1000} m",
+                                (rgb_x1+int((rgb_x2-rgb_x1)/4), rgb_y1+int((rgb_y2-rgb_y1)/2)), cv2.FONT_HERSHEY_TRIPLEX, 0.5, (255, 255, 255))
+
+                # cv2.putText(rgbFrame, "NN fps: {:.2f}".format(fps), (2, rgbFrame.shape[0] - 4), cv2.FONT_HERSHEY_TRIPLEX, 0.4, (255, 255, 255))
+                cv2.putText(rgbFrame, "COLOR IMAGE", (int(rgbFrame.shape[0]/2)+50, 50), cv2.FONT_HERSHEY_TRIPLEX, 1.0, (255, 255, 255), 2)
+                cv2.putText(depthFrameColor, "DEPTH IMAGE", (int(
+                    depthFrameColor.shape[0]/2)+50, 50), cv2.FONT_HERSHEY_TRIPLEX, 1.0, (0, 0, 0), 2)
+
+                cv2.imshow("Depth", depthFrameColor)
+                cv2.imshow("Image", rgbFrame)
+
+                if cv2.waitKey(1) == ord('q'):
+                    break
+    except:
+        None
